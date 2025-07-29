@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { DriveItem, createEmbedUrl } from '@/lib/driveUtils';
-import FolderTreeViewer from './FolderTreeViewer';
-import { Button } from './ui/button';
+import FolderTreeViewer from '@/components/drive/FolderTreeViewer';
+import { Button } from '@/components/ui/button';
 
 interface EcourseViewerProps {
     materi: {

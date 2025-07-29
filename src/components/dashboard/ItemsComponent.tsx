@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import DashboardCard from "./DashboardCard";
-import { Button } from "./ui/button";
+import DashboardCard from "@/components/dashboard/DashboardCard";
+import { Button } from "@/components/ui/button";
 
 interface Item {
     id: number;
@@ -14,7 +13,6 @@ interface Item {
 }
 
 export default function ItemsComponent() {
-    const router = useRouter();
     const [items, setItems] = useState<Item[]>([
         {
             id: 1,
@@ -151,7 +149,7 @@ export default function ItemsComponent() {
                 {items.length === 0 && (
                     <DashboardCard title="No Items Yet" icon="📭">
                         <p className="text-gray-700 mb-4">
-                            You haven't created any items yet. Get started by adding your first item!
+                            You haven&apos;t created any items yet. Get started by adding your first item!
                         </p>
                         <Button
                             onClick={() => setIsCreateModalOpen(true)}

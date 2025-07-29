@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Sidebar from "./Sidebar";
-import { Button } from "./ui/button";
-import EcourseViewer from './EcourseViewer';
-import { DriveItem } from '@/lib/driveUtils';
+import Sidebar from "@/components/layout/Sidebar";
+import { Button } from "@/components/ui/button";
+import EcourseViewer from "@/components/materi/EcourseViewer";
+import { DriveItem } from "@/lib/driveUtils";
 
 interface Materi {
     id: string;
@@ -14,7 +13,19 @@ interface Materi {
     description: string;
     contentUrl: string;
     contentType: string;
-    metadata?: any; // Can be string or object
+    metadata?: string | {
+        folderTree?: DriveItem[];
+        structure?: DriveItem[];
+        rootFolder?: {
+            children?: DriveItem[];
+            id?: string;
+            name?: string;
+            mimeType?: string;
+            isFolder?: boolean;
+            webViewLink?: string;
+            modifiedTime?: string;
+        };
+    }; // Can be string or object
     createdAt: string;
     author: {
         id: string;
@@ -23,7 +34,6 @@ interface Materi {
 }
 
 export default function MateriListComponent() {
-    const { data: session } = useSession();
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [materiList, setMateriList] = useState<Materi[]>([]);
@@ -31,91 +41,79 @@ export default function MateriListComponent() {
     const [selectedMateri, setSelectedMateri] = useState<Materi | null>(null);
     const [isEcourseView, setIsEcourseView] = useState(false);
 
-    // Fetch materi from database
-    useEffect(() => {
-        const fetchMateri = async () => {
-            try {
-                const response = await fetch('/api/materi');
-                const result = await response.json();
+    // Function to fetch materi from database
+    const fetchMateri = async () => {
+        try {
+            setIsLoading(true);
+            const response = await fetch('/api/materi');
+            const result = await response.json();
 
-                if (response.ok && result.success) {
-                    // Parse metadata if it's a string
-                    const parsedData = result.data.map((item: Materi) => {
-                        if (typeof item.metadata === 'string') {
-                            try {
-                                console.log("Raw metadata string for item", item.id, ":", item.metadata);
-
-                                // Cek apakah string kosong atau null
-                                if (!item.metadata || item.metadata.trim() === '') {
-                                    console.log("Empty metadata for item", item.id);
-                                    item.metadata = { folderTree: [] };
-                                    return item;
-                                }
-
-                                const parsedMetadata = JSON.parse(item.metadata);
-                                console.log("Parsed metadata for item", item.id, ":", parsedMetadata);
-
-                                // Cek semua kemungkinan struktur metadata
-                                let folderTreeData = [];
-
-                                if (parsedMetadata && parsedMetadata.folderTree) {
-                                    if (Array.isArray(parsedMetadata.folderTree)) {
-                                        // Format: { folderTree: [...] }
-                                        folderTreeData = parsedMetadata.folderTree;
-                                        console.log("Found array folderTree for", item.id);
-                                    } else if (parsedMetadata.folderTree.structure && Array.isArray(parsedMetadata.folderTree.structure)) {
-                                        // Format: { folderTree: { structure: [...] } }
-                                        folderTreeData = parsedMetadata.folderTree.structure;
-                                        console.log("Found structure in folderTree for", item.id);
-                                    } else if (parsedMetadata.folderTree.rootFolder && parsedMetadata.folderTree.rootFolder.children) {
-                                        // Format: { folderTree: { rootFolder: { children: [...] } } }
-                                        folderTreeData = parsedMetadata.folderTree.rootFolder.children || [];
-                                        console.log("Found rootFolder.children for", item.id);
-                                    }
-                                } else if (parsedMetadata.structure && Array.isArray(parsedMetadata.structure)) {
-                                    // Format: { structure: [...] }
-                                    folderTreeData = parsedMetadata.structure;
-                                    console.log("Found direct structure for", item.id);
-                                } else if (parsedMetadata.rootFolder && parsedMetadata.rootFolder.children) {
-                                    // Format: { rootFolder: { children: [...] } }
-                                    folderTreeData = parsedMetadata.rootFolder.children || [];
-                                    console.log("Found direct rootFolder.children for", item.id);
-                                } else if (Array.isArray(parsedMetadata)) {
-                                    // Format: [...]
-                                    folderTreeData = parsedMetadata;
-                                    console.log("Found direct array for", item.id);
-                                }
-
-                                item.metadata = { folderTree: folderTreeData };
-                                console.log("Final folderTree for", item.id, "length:", folderTreeData.length);
-                            } catch (e) {
-                                console.error("Failed to parse metadata for item:", item.id);
-                                console.error("Error details:", e);
-                                console.error("Raw metadata that failed:", item.metadata);
-                                console.error("Metadata length:", item.metadata?.length);
-                                console.error("First 200 chars:", item.metadata?.substring(0, 200));
+            if (response.ok && result.success) {
+                // Parse metadata if it's a string
+                const parsedData = result.data.map((item: Materi) => {
+                    if (typeof item.metadata === 'string') {
+                        try {
+                            // Cek apakah string kosong atau null
+                            if (!item.metadata || item.metadata.trim() === '') {
                                 item.metadata = { folderTree: [] };
+                                return item;
                             }
-                        } else if (item.metadata && !item.metadata.folderTree) {
-                            // Pastikan folderTree ada dan berupa array
-                            item.metadata = { folderTree: Array.isArray(item.metadata) ? item.metadata : [] };
-                        } else if (!item.metadata) {
-                            // Jika metadata null/undefined
-                            item.metadata = { folderTree: [] };
-                        }
-                        return item;
-                    });
-                    setMateriList(parsedData);
-                } else {
-                    console.error('Error fetching materi:', result.error);
-                }
-            } catch (error) {
-                console.error('Error fetching materi:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
 
+                            const parsedMetadata = JSON.parse(item.metadata);
+                            // Cek semua kemungkinan struktur metadata
+                            let folderTreeData = [];
+
+                            if (parsedMetadata && parsedMetadata.folderTree) {
+                                if (Array.isArray(parsedMetadata.folderTree)) {
+                                    // Format: { folderTree: [...] }
+                                    folderTreeData = parsedMetadata.folderTree;
+                                } else if (parsedMetadata.folderTree.structure && Array.isArray(parsedMetadata.folderTree.structure)) {
+                                    // Format: { folderTree: { structure: [...] } }
+                                    folderTreeData = parsedMetadata.folderTree.structure;
+                                } else if (parsedMetadata.folderTree.rootFolder && parsedMetadata.folderTree.rootFolder.children) {
+                                    // Format: { folderTree: { rootFolder: { children: [...] } } }
+                                    folderTreeData = parsedMetadata.folderTree.rootFolder.children || [];
+                                }
+                            } else if (parsedMetadata.structure && Array.isArray(parsedMetadata.structure)) {
+                                // Format: { structure: [...] }
+                                folderTreeData = parsedMetadata.structure;
+                            } else if (parsedMetadata.rootFolder && parsedMetadata.rootFolder.children) {
+                                // Format: { rootFolder: { children: [...] } }
+                                folderTreeData = parsedMetadata.rootFolder.children || [];
+                            } else if (Array.isArray(parsedMetadata)) {
+                                // Format: [...]
+                                folderTreeData = parsedMetadata;
+                            }
+
+                            item.metadata = { folderTree: folderTreeData };
+                        } catch (e) {
+                            item.metadata = { folderTree: [] };
+                            console.error("Failed to parse metadata for item:", item.id);
+                            console.error("Error details:", e);
+                            console.error("Raw metadata that failed:", item.metadata);
+                        }
+                    } else if (item.metadata && !item.metadata.folderTree) {
+                        // Pastikan folderTree ada dan berupa array
+                        item.metadata = { folderTree: Array.isArray(item.metadata) ? item.metadata : [] };
+                    } else if (!item.metadata) {
+                        // Jika metadata null/undefined
+                        item.metadata = { folderTree: [] };
+                    }
+                    return item;
+                });
+                setMateriList(parsedData);
+            } else {
+                console.error('Error fetching materi:', result.error);
+            }
+        } catch (error) {
+            console.error('Error fetching materi:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch materi when component mounts
+    useEffect(() => {
         fetchMateri();
     }, []);
 
@@ -143,13 +141,7 @@ export default function MateriListComponent() {
 
     // If e-course view is active, render the EcourseViewer
     if (isEcourseView && selectedMateri && selectedMateri.contentType === 'folder') {
-        const folderTree = selectedMateri.metadata?.folderTree || [];
-
-        // Debug: Log untuk melihat struktur data
-        console.log("Selected Materi:", selectedMateri);
-        console.log("Metadata:", selectedMateri.metadata);
-        console.log("Folder Tree:", folderTree);
-        console.log("Is folderTree array?", Array.isArray(folderTree));
+        const folderTree = typeof selectedMateri.metadata === 'object' && selectedMateri.metadata?.folderTree ? selectedMateri.metadata.folderTree : [];
 
         // Pastikan folderTree adalah array
         const validFolderTree = Array.isArray(folderTree) ? folderTree : [];
@@ -270,11 +262,30 @@ export default function MateriListComponent() {
                                             </Button>
 
                                             <Button
-                                                onClick={(e) => {
+                                                onClick={async (e) => {
                                                     e.stopPropagation();
                                                     if (confirm('Yakin ingin menghapus materi ini?')) {
-                                                        // TODO: Logic hapus materi
-                                                        console.log('Delete materi:', materi.id);
+                                                        try {
+                                                            setIsLoading(true);
+                                                            const response = await fetch(`/api/materi/${materi.id}`, {
+                                                                method: 'DELETE',
+                                                            });
+                                                            
+                                                            const result = await response.json();
+                                                            
+                                                            if (response.ok && result.success) {
+                                                                // Refresh materi list after successful deletion
+                                                                await fetchMateri();
+                                                            } else {
+                                                                console.error('Error deleting materi:', result.error);
+                                                                alert(`Gagal menghapus materi: ${result.error || 'Terjadi kesalahan'}`);
+                                                            }
+                                                        } catch (error) {
+                                                            console.error('Error deleting materi:', error);
+                                                            alert('Gagal menghapus materi: Terjadi kesalahan');
+                                                        } finally {
+                                                            setIsLoading(false);
+                                                        }
                                                     }
                                                 }}
                                                 className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-red-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"

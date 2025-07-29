@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { DriveItem, formatFileSize, formatDate } from "@/lib/driveUtils";
+import { Button } from "@/components/ui/button";
+import { DriveItem, formatFileSize } from "@/lib/driveUtils";
 
 interface FolderTreeViewerProps {
     items: DriveItem[];
@@ -99,10 +99,6 @@ function FolderTreeItem({ item, level, onFileSelect, selectedFileId }: FolderTre
 export default function FolderTreeViewer({ items, onFileSelect, selectedFileId }: FolderTreeViewerProps) {
     // Pastikan items adalah array
     const validItems = Array.isArray(items) ? items : [];
-
-    console.log("FolderTreeViewer received items:", items);
-    console.log("Is items array?", Array.isArray(items));
-    console.log("Valid items:", validItems);
 
     return (
         <div className="bg-white border-2 border-black rounded-md overflow-hidden">

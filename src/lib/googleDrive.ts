@@ -33,19 +33,12 @@ export async function parseFolderContents(folderId: string): Promise<{
   error?: string;
 }> {
   try {
-    console.log("🔍 Attempting to access Google Drive folder:", folderId);
-    console.log("🔑 Service account email:", process.env.GOOGLE_CLIENT_EMAIL);
-    console.log("🔑 Project ID:", process.env.GOOGLE_PROJECT_ID);
-    console.log("🔑 Private key exists:", !!process.env.GOOGLE_PRIVATE_KEY);
 
     // 1. Dapatkan informasi folder root
     const rootFolderRes = await drive.files.get({
       fileId: folderId,
       fields: 'id, name, mimeType, webViewLink, modifiedTime',
     });
-
-    console.log("✅ Root folder response status:", rootFolderRes.status);
-    console.log("📁 Root folder data:", rootFolderRes.data);
 
     if (rootFolderRes.status !== 200 || !rootFolderRes.data) {
       return { structure: {} as FolderStructure, error: "Folder tidak ditemukan atau tidak dapat diakses." };
@@ -56,15 +49,11 @@ export async function parseFolderContents(folderId: string): Promise<{
 
     // Fungsi rekursif untuk mengambil semua item dalam folder
     async function fetchItemsRecursive(currentFolderId: string, parentId?: string) {
-      console.log("🔍 Fetching items for folder:", currentFolderId);
-
       const res = await drive.files.list({
         q: `'${currentFolderId}' in parents and trashed = false`,
         fields: 'files(id, name, mimeType, size, modifiedTime, webViewLink, parents)',
         pageSize: 1000, // Ambil hingga 1000 item
       });
-
-      console.log(`📂 Found ${res.data.files?.length || 0} items in folder ${currentFolderId}`);
 
       if (!res.data.files) return;
 
@@ -127,11 +116,16 @@ export async function parseFolderContents(folderId: string): Promise<{
       },
     };
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error parsing Google Drive folder:", err);
     let errorMessage = "Terjadi kesalahan saat mengakses Google Drive API.";
-    if (err.response?.data?.error?.message) {
-      errorMessage += ` Pesan: ${err.response.data.error.message}`;
+    
+    // Check if error is an object with response property
+    if (err && typeof err === 'object' && 'response' in err && 
+        err.response && typeof err.response === 'object' && 'data' in err.response &&
+        err.response.data && typeof err.response.data === 'object' && 'error' in err.response.data &&
+        err.response.data.error && typeof err.response.data.error === 'object' && 'message' in err.response.data.error) {
+      errorMessage += ` Pesan: ${(err.response.data.error as {message: string}).message}`;
     }
     return { structure: {} as FolderStructure, error: errorMessage };
   }

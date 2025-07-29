@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import NextAuth from "next-auth"
 
 declare module "next-auth" {
   interface Session {
@@ -7,6 +8,8 @@ declare module "next-auth" {
       username: string;
       name?: string | null;
       email?: string | null;
+      createdAt?: string;
+      materiCount?: number;
     };
   }
 
@@ -15,6 +18,8 @@ declare module "next-auth" {
     username: string;
     name?: string | null;
     email?: string | null;
+    createdAt?: string;
+    materiCount?: number;
   }
 }
 

@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import DashboardCard from "./DashboardCard";
-import Sidebar from "./Sidebar";
-import { Button } from "./ui/button";
+import Sidebar from "@/components/layout/Sidebar";
 
 interface Materi {
     id: string;
@@ -58,7 +57,7 @@ export default function DashboardComponent() {
                         Welcome to Your Dashboard! 👋
                     </h1>
                     <p className="text-sm sm:text-base text-gray-700">
-                        Hello {session?.user?.username || "User"}, here's what's happening with your account today.
+                        Hello {session?.user?.username || "User"}, here&apos;s what&apos;s happening with your account today.
                     </p>
                 </div>
 
@@ -83,24 +82,6 @@ export default function DashboardComponent() {
                         description="Minggu ini"
                     />
                 </div>
-
-                {/* Recent Activity */}
-                <DashboardCard title="Recent Activity" icon="📋">
-                    <div className="space-y-3">
-                        <div className="flex items-center justify-between py-2 border-b border-black">
-                            <span className="font-medium text-black">Created new item</span>
-                            <span className="text-sm text-gray-600">2 hours ago</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 border-b border-black">
-                            <span className="font-medium text-black">Updated profile</span>
-                            <span className="text-sm text-gray-600">1 day ago</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2">
-                            <span className="font-medium text-black">Logged in</span>
-                            <span className="text-sm text-gray-600">2 days ago</span>
-                        </div>
-                    </div>
-                </DashboardCard>
             </div>
         </Sidebar>
     );

@@ -29,7 +29,7 @@ export async function createMateri(data: CreateMateriData) {
       contentType: data.contentType,
       metadata,
       authorId: data.authorId,
-    } as any,
+    } as {title: string; description: string; contentUrl: string; contentType: MateriContentType; metadata: string | null; authorId: string},
     include: {
       author: {
         select: {

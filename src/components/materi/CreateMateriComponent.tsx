@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import Sidebar from "./Sidebar";
-import { Button } from "./ui/button";
+import Sidebar from "@/components/layout/Sidebar";
+import { Button } from "@/components/ui/button";
 
 export default function CreateMateriComponent() {
-    const { data: session } = useSession();
     const router = useRouter();
 
     const [formData, setFormData] = useState({
         title: "",
         description: "",
         contentUrl: "",
-        contentType: "link" // "link", "folder", "document", "video"
+        contentType: "folder" // Selalu menggunakan tipe folder (Google Drive)
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -107,32 +105,13 @@ export default function CreateMateriComponent() {
                             />
                         </div>
 
-                        {/* Content Type */}
-                        <div>
-                            <label htmlFor="contentType" className="block text-lg font-bold text-black mb-3">
-                                📂 Jenis Konten
-                            </label>
-                            <select
-                                id="contentType"
-                                name="contentType"
-                                value={formData.contentType}
-                                onChange={handleInputChange}
-                                className="w-full py-3 px-4 text-base font-medium rounded-md border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] bg-white text-black focus:outline-none focus:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] focus:translate-x-[2px] focus:translate-y-[2px] transition-all duration-200"
-                            >
-                                <option value="link">🔗 Link Biasa</option>
-                                <option value="folder">📁 Google Drive Folder (dengan PDF/dokumen)</option>
-                                <option value="document">📄 Google Docs/Sheets/Slides</option>
-                                <option value="video">🎥 Video (YouTube, dll.)</option>
-                            </select>
-                        </div>
+                        {/* Content Type - Hidden, always set to "folder" */}
+                        <input type="hidden" id="contentType" name="contentType" value="folder" />
 
                         {/* Content URL */}
                         <div>
                             <label htmlFor="contentUrl" className="block text-lg font-bold text-black mb-3">
-                                {formData.contentType === "folder" && "📁 Link Google Drive Folder"}
-                                {formData.contentType === "document" && "📄 Link Google Docs"}
-                                {formData.contentType === "video" && "🎥 Link Video"}
-                                {formData.contentType === "link" && "🔗 Link Konten"}
+                                📁 Link Google Drive Folder
                             </label>
                             <input
                                 type="url"
@@ -141,30 +120,11 @@ export default function CreateMateriComponent() {
                                 value={formData.contentUrl}
                                 onChange={handleInputChange}
                                 required
-                                placeholder={
-                                    formData.contentType === "folder"
-                                        ? "https://drive.google.com/drive/folders/..."
-                                        : formData.contentType === "document"
-                                            ? "https://docs.google.com/document/d/..."
-                                            : formData.contentType === "video"
-                                                ? "https://www.youtube.com/watch?v=..."
-                                                : "https://..."
-                                }
+                                placeholder="https://drive.google.com/drive/folders/..."
                                 className="w-full py-3 px-4 text-base font-medium rounded-md border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] bg-white text-black placeholder-gray-500 focus:outline-none focus:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] focus:translate-x-[2px] focus:translate-y-[2px] transition-all duration-200"
                             />
                             <div className="text-sm text-gray-600 mt-2">
-                                {formData.contentType === "folder" && (
-                                    <p>💡 Pastikan folder Google Drive sudah di-set "Anyone with the link can view". Sistem akan otomatis mendeteksi PDF dan dokumen di dalam folder.</p>
-                                )}
-                                {formData.contentType === "document" && (
-                                    <p>💡 Pastikan Google Docs sudah di-set "Anyone with the link can view"</p>
-                                )}
-                                {formData.contentType === "video" && (
-                                    <p>💡 Pastikan video bisa diakses publik atau unlisted</p>
-                                )}
-                                {formData.contentType === "link" && (
-                                    <p>💡 Pastikan link bisa diakses publik</p>
-                                )}
+                                <p>💡 Tip: Masukkan link folder Google Drive yang sudah dibagikan dengan akses &quot;Anyone with the link can view&quot;. Sistem akan otomatis mendeteksi PDF dan dokumen di dalam folder.</p>
                             </div>
                         </div>
 

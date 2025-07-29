@@ -34,7 +34,7 @@ export default function LoginForm({
 
         if (!schemaValidation.success) {
             const errorMessage = schemaValidation.error.issues
-                .map((err: any) => err.message)
+                .map((err: { message: string }) => err.message)
                 .join(", ");
             onLoginError?.(errorMessage);
             setIsLoading(false);

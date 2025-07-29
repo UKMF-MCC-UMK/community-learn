@@ -1,5 +1,5 @@
-import DashboardComponent from "@/components/DashboardComponent";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import DashboardComponent from "@/components/dashboard/DashboardComponent";
+import ProtectedRoute from "@/components/utils/ProtectedRoute";
 
 export default function Dashboard() {
     return (

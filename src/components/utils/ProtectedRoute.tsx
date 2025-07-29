@@ -3,14 +3,14 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/utils/LoadingSpinner";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const router = useRouter();
 
     useEffect(() => {
