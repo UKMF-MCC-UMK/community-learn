@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ interface Materi {
 }
 
 export default function MateriListComponent() {
+    const { data: session } = useSession();
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [materiList, setMateriList] = useState<Materi[]>([]);
@@ -246,53 +248,55 @@ export default function MateriListComponent() {
                                             onClick={() => handleViewMateri(materi)}
                                             className="flex-1 py-3 px-6 text-base sm:text-lg font-bold rounded-md border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] bg-green-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
                                         >
-                                            👁️ Lihat Materi
+                                            Lihat Materi
                                         </Button>
 
-                                        {/* Secondary Actions */}
-                                        <div className="flex gap-2">
-                                            <Button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    router.push(`/dashboard/materi/${materi.id}/edit`);
-                                                }}
-                                                className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-blue-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"
-                                            >
-                                                ✏️ Edit
-                                            </Button>
+                                        {/* Secondary Actions - Only show for author */}
+                                        {session?.user && 'id' in session.user && session.user.id === materi.author.id && (
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/dashboard/materi/${materi.id}/edit`);
+                                                    }}
+                                                    className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-blue-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"
+                                                >
+                                                    ✏️ Edit
+                                                </Button>
 
-                                            <Button
-                                                onClick={async (e) => {
-                                                    e.stopPropagation();
-                                                    if (confirm('Yakin ingin menghapus materi ini?')) {
-                                                        try {
-                                                            setIsLoading(true);
-                                                            const response = await fetch(`/api/materi/${materi.id}`, {
-                                                                method: 'DELETE',
-                                                            });
-                                                            
-                                                            const result = await response.json();
-                                                            
-                                                            if (response.ok && result.success) {
-                                                                // Refresh materi list after successful deletion
-                                                                await fetchMateri();
-                                                            } else {
-                                                                console.error('Error deleting materi:', result.error);
-                                                                alert(`Gagal menghapus materi: ${result.error || 'Terjadi kesalahan'}`);
+                                                <Button
+                                                    onClick={async (e) => {
+                                                        e.stopPropagation();
+                                                        if (confirm('Yakin ingin menghapus materi ini?')) {
+                                                            try {
+                                                                setIsLoading(true);
+                                                                const response = await fetch(`/api/materi/${materi.id}`, {
+                                                                    method: 'DELETE',
+                                                                });
+
+                                                                const result = await response.json();
+
+                                                                if (response.ok && result.success) {
+                                                                    // Refresh materi list after successful deletion
+                                                                    await fetchMateri();
+                                                                } else {
+                                                                    console.error('Error deleting materi:', result.error);
+                                                                    alert(`Gagal menghapus materi: ${result.error || 'Terjadi kesalahan'}`);
+                                                                }
+                                                            } catch (error) {
+                                                                console.error('Error deleting materi:', error);
+                                                                alert('Gagal menghapus materi: Terjadi kesalahan');
+                                                            } finally {
+                                                                setIsLoading(false);
                                                             }
-                                                        } catch (error) {
-                                                            console.error('Error deleting materi:', error);
-                                                            alert('Gagal menghapus materi: Terjadi kesalahan');
-                                                        } finally {
-                                                            setIsLoading(false);
                                                         }
-                                                    }
-                                                }}
-                                                className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-red-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"
-                                            >
-                                                🗑️ Hapus
-                                            </Button>
-                                        </div>
+                                                    }}
+                                                    className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-red-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"
+                                                >
+                                                    🗑️ Hapus
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

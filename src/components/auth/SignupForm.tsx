@@ -133,7 +133,7 @@ export default function SignupForm({
 
             <span className="fira-sans-light mt-4 sm:mt-6 text-center text-black text-sm sm:text-base">
                 Already have an account?{" "}
-                <Link href="/signup" className="underline fira-sans-medium text-blue-600 hover:text-blue-800">
+                <Link href="/login" className="underline fira-sans-medium text-blue-600 hover:text-blue-800">
                     Login here
                 </Link>
             </span>

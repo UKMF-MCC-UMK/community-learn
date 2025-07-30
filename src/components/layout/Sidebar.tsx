@@ -40,11 +40,11 @@ export default function Sidebar({ children }: SidebarProps) {
             {/* Sidebar */}
             <div
                 className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#c3bafa] border-r-4 border-black shadow-[8px_0px_0px_0px_rgba(0,0,0,1)] transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                    } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
+                    } lg:translate-x-0 transition-transform duration-300 ease-in-out lg:h-screen lg:sticky lg:top-0`}
             >
                 <div className="flex flex-col h-full">
                     {/* Header */}
-                    <div className="p-6 border-b-2 border-black">
+                    <div className="p-6 border-b-2 border-black flex-shrink-0">
                         <h1 className="text-xl sm:text-2xl font-bold text-black">
                             Dashboard
                         </h1>
@@ -56,7 +56,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     </div>
 
                     {/* Navigation */}
-                    <nav className="flex-1 p-4">
+                    <nav className="flex-1 p-4 overflow-y-auto">
                         <ul className="space-y-2">
                             {menuItems.map((item) => (
                                 <li key={item.href}>
@@ -77,7 +77,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     </nav>
 
                     {/* Logout Button */}
-                    <div className="p-4 border-t-2 border-black">
+                    <div className="p-4 border-t-2 border-black flex-shrink-0">
                         <button
                             onClick={handleLogout}
                             className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-400 hover:bg-red-500 text-black font-bold rounded-md border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
@@ -98,7 +98,7 @@ export default function Sidebar({ children }: SidebarProps) {
             )}
 
             {/* Main content */}
-            <div className="flex-1 lg:ml-0">
+            <div className="flex-1 lg:ml-0 min-h-screen overflow-y-auto">
                 <main className="p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8">
                     {children}
                 </main>
