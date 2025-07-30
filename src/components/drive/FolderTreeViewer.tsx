@@ -81,7 +81,7 @@ function FolderTreeItem({ item, level, onFileSelect, selectedFileId }: FolderTre
             {/* Children (if expanded) */}
             {hasChildren && isExpanded && item.children && (
                 <div className="ml-4 border-l-2 border-gray-200 pl-2">
-                    {Array.isArray(item.children) && item.children.map((child: DriveItem) => (
+                    {Array.isArray(item.children) && item.children.slice().reverse().map((child: DriveItem) => (
                         <FolderTreeItem
                             key={child.id}
                             item={child}
@@ -116,7 +116,7 @@ export default function FolderTreeViewer({ items, onFileSelect, selectedFileId }
                         Tidak ada konten ditemukan
                     </div>
                 ) : (
-                    validItems.map((item) => (
+                    validItems.slice().reverse().map((item) => (
                         <FolderTreeItem
                             key={item.id}
                             item={item}

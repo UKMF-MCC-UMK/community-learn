@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import FolderTreeViewer from "./FolderTreeViewer";
+import FolderTreeViewer from "@/components/drive/FolderTreeViewer";
 import {
     extractGoogleDriveFolderId,
     createEmbedUrl,
