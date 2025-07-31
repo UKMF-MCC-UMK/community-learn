@@ -189,7 +189,7 @@ export default function MateriListComponent() {
                             onClick={() => router.push("/dashboard/materi/create")}
                             className="w-full sm:w-auto py-3 px-6 text-base sm:text-lg font-bold rounded-md border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] bg-yellow-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
                         >
-                            ✏️ Buat Materi Baru
+                            Buat Materi Baru
                         </Button>
                     </div>
                 </div>
@@ -261,7 +261,7 @@ export default function MateriListComponent() {
                                                     }}
                                                     className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-blue-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"
                                                 >
-                                                    ✏️ Edit
+                                                    Edit
                                                 </Button>
 
                                                 <Button
@@ -293,7 +293,7 @@ export default function MateriListComponent() {
                                                     }}
                                                     className="px-4 py-2 text-sm font-bold rounded-md border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-red-300 text-black hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200"
                                                 >
-                                                    🗑️ Hapus
+                                                    Hapus
                                                 </Button>
                                             </div>
                                         )}
