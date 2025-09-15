@@ -11,15 +11,6 @@ datasource db {
 }
 
 
-model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  createdCourses Materi[]
-}
 
 model Materi {
   id          String   @id @default(cuid())
@@ -32,5 +23,4 @@ model Materi {
   updatedAt   DateTime @updatedAt
 
   authorId String
-  author   User   @relation(fields: [authorId], references: [id])
 }

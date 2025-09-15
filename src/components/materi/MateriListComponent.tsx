@@ -28,10 +28,7 @@ interface Materi {
         };
     }; // Can be string or object
     createdAt: string;
-    author: {
-        id: string;
-        username: string;
-    };
+    authorId: string;
 }
 
 export default function MateriListComponent() {
@@ -228,7 +225,7 @@ export default function MateriListComponent() {
 
                                             <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
                                                 <span>📅 {new Date(materi.createdAt).toLocaleDateString('id-ID')}</span>
-                                                <span>👤 {materi.author.username}</span>
+                                                <span>👤 {materi.authorId}</span>
                                                 <span className="px-2 py-1 bg-yellow-200 rounded-md border border-black text-xs font-bold">
                                                     {materi.contentType === "folder" && "📁 FOLDER"}
                                                     {materi.contentType === "document" && "📄 DOCUMENT"}
@@ -252,7 +249,7 @@ export default function MateriListComponent() {
                                         </Button>
 
                                         {/* Secondary Actions - Only show for author */}
-                                        {session?.user && 'id' in session.user && session.user.id === materi.author.id && (
+                                        {session?.user && 'id' in session.user && session.user.id === materi.authorId && (
                                             <div className="flex gap-2">
                                                 <Button
                                                     onClick={(e) => {

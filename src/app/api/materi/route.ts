@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     let metadata: string | null = null;
     if (contentType === "folder") {
       try {
-        const folderId = extractGoogleDriveFolderId(contentUrl);
+        const folderId = extractGoogleDriveFolderId(contentUrl);        
 
         if (!folderId) {
           return NextResponse.json(
@@ -76,20 +76,12 @@ export async function POST(request: NextRequest) {
 
     await prisma.$executeRaw`
       INSERT INTO Materi (id, title, description, contentUrl, contentType, metadata, authorId, createdAt, updatedAt)
-      VALUES (${materiId}, ${title}, ${description}, ${contentUrl}, ${contentType}, ${metadata}, ${session.user.id}, NOW(), NOW())
+      VALUES (${materiId}, ${title}, ${description}, ${contentUrl}, ${contentType}, ${metadata}, ${session.user.username}, NOW(), NOW())
     `;
 
     // Fetch the created materi with author
     const materi = await prisma.materi.findUnique({
-      where: { id: materiId },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
+      where: { id: materiId }
     });
 
     return NextResponse.json({
@@ -108,14 +100,6 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const materi = await prisma.materi.findMany({
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
       orderBy: {
         createdAt: 'desc',
       },

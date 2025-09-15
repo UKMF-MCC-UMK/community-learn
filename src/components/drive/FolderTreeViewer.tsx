@@ -18,7 +18,7 @@ interface FolderTreeItemProps {
 }
 
 function FolderTreeItem({ item, level, onFileSelect, selectedFileId }: FolderTreeItemProps) {
-    const [isExpanded, setIsExpanded] = useState(level <= 1); // Auto expand first 2 levels
+    const [isExpanded, setIsExpanded] = useState(false); // Auto expand first 2 levels
 
     const hasChildren = item.children && Array.isArray(item.children) && item.children.length > 0;
     const isSelected = selectedFileId === item.id;

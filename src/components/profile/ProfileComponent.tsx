@@ -37,8 +37,8 @@ export default function ProfileComponent() {
             const data = await response.json();
             // Update session dengan data dari API
             if (session.user) {
-              session.user.createdAt = data.createdAt;
-              session.user.materiCount = data.materiCount;
+              // session.user.createdAt = data.createdAt;
+              // session.user.materiCount = data.materiCount;
             }
             setProfileData({
               createdAt: data.createdAt || "",
