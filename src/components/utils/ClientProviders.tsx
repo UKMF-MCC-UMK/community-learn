@@ -3,10 +3,11 @@
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/utils/themeProvider";
 import { SessionProvider } from "next-auth/react";
+import { Session } from "next-auth";
 
-export function ClientProviders({ children }: { children: ReactNode }) {
+export function ClientProviders({ children, session }: { children: ReactNode, session: Session | null }) {
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         {children}
       </ThemeProvider>

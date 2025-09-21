@@ -1,24 +1,22 @@
 import "./globals.css";
 import { ReactNode } from "react";
-// import { Roboto_Mono } from "next/font/google";
 import { Metadata } from "next";
 import { ClientProviders } from "@/components/utils/ClientProviders";
+import { getServerSession } from "next-auth";
 
 export const metadata: Metadata = {
     title: "Community Learn",
     description: "Platform Belajar Bersama Komunitas",
 };
 
-// const robotoMono = Roboto_Mono({
-//     variable: "--font-roboto-mono",
-//     subsets: ["latin"],
-// });
+export default async function RootLayout({ children }: { children: ReactNode }) {
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+    const session = await getServerSession()
+
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body className={` antialiased`}>
-                <ClientProviders>
+                <ClientProviders session={session}>
                     {children}
                 </ClientProviders>
             </body>
