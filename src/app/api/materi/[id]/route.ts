@@ -28,14 +28,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const materi = await prisma.materi.findUnique({
       where: { id },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
     });
 
     if (!materi) {
@@ -148,15 +140,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         contentType,
         metadata,
         updatedAt: new Date(),
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
+      }
     });
 
     return NextResponse.json({

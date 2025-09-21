@@ -1,5 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import type { NextAuthOptions, User, Session } from "next-auth";
+import type { NextAuthOptions} from "next-auth";
 import axios from "axios";
 
 // Deklarasi modul untuk menambahkan properti custom ke Session dan User

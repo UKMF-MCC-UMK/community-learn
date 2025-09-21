@@ -30,27 +30,11 @@ export async function createMateri(data: CreateMateriData) {
       metadata,
       authorId: data.authorId,
     } as {title: string; description: string; contentUrl: string; contentType: MateriContentType; metadata: string | null; authorId: string},
-    include: {
-      author: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-    },
   });
 }
 
 export async function getAllMateri() {
   return await prisma.materi.findMany({
-    include: {
-      author: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-    },
     orderBy: {
       createdAt: 'desc',
     },

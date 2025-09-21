@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { loginSchema, LoginSchemaType } from "@/schema/userLoginSchema";
 import { Button } from "@/components/ui/button";
 
@@ -113,12 +112,6 @@ export default function LoginForm({
                 </Button>
             </form>
 
-            <span className="fira-sans-light mt-4 sm:mt-6 text-center text-black text-sm sm:text-base">
-                Don&apos;t have an account?{" "}
-                <Link href="/signup" className="underline fira-sans-medium text-blue-600 hover:text-blue-800">
-                    Sign up
-                </Link>
-            </span>
         </div>
     );
 }

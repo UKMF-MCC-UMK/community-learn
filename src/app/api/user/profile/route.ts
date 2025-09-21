@@ -1,14 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { z } from "zod";
-
-// Schema untuk validasi update profil
-const profileUpdateSchema = z.object({
-  currentPassword: z.string().min(1, "Password saat ini harus diisi").optional(),
-  newPassword: z.string().min(6, "Password baru minimal 6 karakter").optional(),
-});
 
 // GET: Mendapatkan data profil pengguna
 export async function GET() {

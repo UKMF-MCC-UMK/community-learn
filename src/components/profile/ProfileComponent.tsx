@@ -11,7 +11,7 @@ export default function ProfileComponent() {
   const { data: session } = useSession();
   // const router = useRouter();
   // const [isLoading, setIsLoading] = useState(false);
-  const { notifications, removeNotification, showError, showSuccess } =
+  const { notifications, removeNotification } =
     useNotification();
 
   // Form state
